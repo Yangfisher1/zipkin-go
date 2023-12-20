@@ -1,4 +1,4 @@
-// Copyright 2022 The OpenZipkin Authors
+// Copyright 2022 The Yangfisher1 Authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,12 +14,12 @@
 
 package middleware
 
-import "github.com/openzipkin/zipkin-go/model"
+import "github.com/Yangfisher1/zipkin-go/model"
 
 // BaggageHandler holds the interface for server and client middlewares
 // interacting with baggage context propagation implementations.
 // A reference implementation can be found in package:
-// github.com/openzipkin/zipkin-go/propagation/baggage
+// github.com/Yangfisher1/zipkin-go/propagation/baggage
 type BaggageHandler interface {
 	// New returns a fresh BaggageFields implementation primed for usage in a
 	// request lifecycle.

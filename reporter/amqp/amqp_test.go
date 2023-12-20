@@ -1,4 +1,4 @@
-// Copyright 2022 The OpenZipkin Authors
+// Copyright 2022 The Yangfisher1 Authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -23,8 +23,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/openzipkin/zipkin-go/model"
-	zipkinamqp "github.com/openzipkin/zipkin-go/reporter/amqp"
+	"github.com/Yangfisher1/zipkin-go/model"
+	zipkinamqp "github.com/Yangfisher1/zipkin-go/reporter/amqp"
 	amqp "github.com/rabbitmq/amqp091-go"
 )
 

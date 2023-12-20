@@ -1,4 +1,4 @@
-// Copyright 2022 The OpenZipkin Authors
+// Copyright 2022 The Yangfisher1 Authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -21,8 +21,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/openzipkin/zipkin-go"
-	"github.com/openzipkin/zipkin-go/model"
+	"github.com/Yangfisher1/zipkin-go"
+	"github.com/Yangfisher1/zipkin-go/model"
 )
 
 const (

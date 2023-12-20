@@ -1,4 +1,4 @@
-// Copyright 2022 The OpenZipkin Authors
+// Copyright 2022 The Yangfisher1 Authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@ syntax = "proto3";
 
 package zipkin.testing;
 
-option go_package = "github.com/openzipkin/zipkin-go/proto/testing";
+option go_package = "github.com/Yangfisher1/zipkin-go/proto/testing";
 
 message HelloRequest {
   string payload = 1;

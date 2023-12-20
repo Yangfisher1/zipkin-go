@@ -1,4 +1,4 @@
-// Copyright 2022 The OpenZipkin Authors
+// Copyright 2022 The Yangfisher1 Authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,9 +19,9 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/openzipkin/zipkin-go"
-	zipkinhttp "github.com/openzipkin/zipkin-go/middleware/http"
-	"github.com/openzipkin/zipkin-go/propagation/baggage"
+	"github.com/Yangfisher1/zipkin-go"
+	zipkinhttp "github.com/Yangfisher1/zipkin-go/middleware/http"
+	"github.com/Yangfisher1/zipkin-go/propagation/baggage"
 )
 
 const (

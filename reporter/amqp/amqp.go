@@ -1,4 +1,4 @@
-// Copyright 2022 The OpenZipkin Authors
+// Copyright 2022 The Yangfisher1 Authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -25,8 +25,8 @@ import (
 
 	amqp "github.com/rabbitmq/amqp091-go"
 
-	"github.com/openzipkin/zipkin-go/model"
-	"github.com/openzipkin/zipkin-go/reporter"
+	"github.com/Yangfisher1/zipkin-go/model"
+	"github.com/Yangfisher1/zipkin-go/reporter"
 )
 
 // defaultRmqRoutingKey/Exchange/Kind sets the standard RabbitMQ queue our Reporter will publish on.
@@ -58,7 +58,7 @@ func Logger(logger *log.Logger) ReporterOption {
 }
 
 // Exchange sets the Exchange used to send messages (
-// see https://github.com/openzipkin/zipkin/tree/master/zipkin-collector/rabbitmq
+// see https://github.com/Yangfisher1/zipkin/tree/master/zipkin-collector/rabbitmq
 // if want to change default routing key or exchange
 func Exchange(exchange string) ReporterOption {
 	return func(c *rmqReporter) {

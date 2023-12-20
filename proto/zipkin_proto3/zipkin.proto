@@ -1,4 +1,4 @@
-// Copyright 2022 The OpenZipkin Authors
+// Copyright 2022 The Yangfisher1 Authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ package zipkin.proto3;
 option java_package = "zipkin2.proto3";
 option java_multiple_files = true;
 
-option go_package = "github.com/openzipkin/zipkin-go/proto/zipkin_proto3";
+option go_package = "github.com/Yangfisher1/zipkin-go/proto/zipkin_proto3";
 
 // A span is a single-host view of an operation. A trace is a series of spans
 // (often RPC calls) which nest to form a latency tree. Spans are in the same

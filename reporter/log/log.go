@@ -1,4 +1,4 @@
-// Copyright 2022 The OpenZipkin Authors
+// Copyright 2022 The Yangfisher1 Authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -24,8 +24,8 @@ import (
 	"os"
 	"time"
 
-	"github.com/openzipkin/zipkin-go/model"
-	"github.com/openzipkin/zipkin-go/reporter"
+	"github.com/Yangfisher1/zipkin-go/model"
+	"github.com/Yangfisher1/zipkin-go/reporter"
 )
 
 // logReporter will send spans to the default Go Logger.

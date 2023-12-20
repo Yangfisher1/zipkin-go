@@ -1,5 +1,5 @@
 <!--
-Copyright 2022 The OpenZipkin Authors
+Copyright 2022 The Yangfisher1 Authors
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -16,18 +16,18 @@ limitations under the License.
 
 # Zipkin Library for Go
 
-[![GHA](https://github.com/openzipkin/zipkin-go/actions/workflows/ci.yml/badge.svg?event=push)](https://github.com/openzipkin/zipkin-go/actions/workflows/ci.yml)
-[![codecov](https://codecov.io/gh/openzipkin/zipkin-go/branch/master/graph/badge.svg?token=gXdWofFlsq)](https://codecov.io/gh/openzipkin/zipkin-go)
-[![Go Report Card](https://goreportcard.com/badge/github.com/openzipkin/zipkin-go)](https://goreportcard.com/report/github.com/openzipkin/zipkin-go)
-[![GoDoc](https://godoc.org/github.com/openzipkin/zipkin-go?status.svg)](https://godoc.org/github.com/openzipkin/zipkin-go)
-[![Gitter chat](https://badges.gitter.im/openzipkin/zipkin.svg)](https://gitter.im/openzipkin/zipkin?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-[![Sourcegraph](https://sourcegraph.com/github.com/openzipkin/zipkin-go/-/badge.svg)](https://sourcegraph.com/github.com/openzipkin/zipkin-go?badge)
+[![GHA](https://github.com/Yangfisher1/zipkin-go/actions/workflows/ci.yml/badge.svg?event=push)](https://github.com/Yangfisher1/zipkin-go/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/Yangfisher1/zipkin-go/branch/master/graph/badge.svg?token=gXdWofFlsq)](https://codecov.io/gh/Yangfisher1/zipkin-go)
+[![Go Report Card](https://goreportcard.com/badge/github.com/Yangfisher1/zipkin-go)](https://goreportcard.com/report/github.com/Yangfisher1/zipkin-go)
+[![GoDoc](https://godoc.org/github.com/Yangfisher1/zipkin-go?status.svg)](https://godoc.org/github.com/Yangfisher1/zipkin-go)
+[![Gitter chat](https://badges.gitter.im/Yangfisher1/zipkin.svg)](https://gitter.im/Yangfisher1/zipkin?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Sourcegraph](https://sourcegraph.com/github.com/Yangfisher1/zipkin-go/-/badge.svg)](https://sourcegraph.com/github.com/Yangfisher1/zipkin-go?badge)
 
 Zipkin Go is the official Go Tracer / Tracing implementation for Zipkin, 
-supported by the OpenZipkin community.
+supported by the Yangfisher1 community.
 
 ## package organization
-`zipkin-go` is built with interoperability in mind within the OpenZipkin
+`zipkin-go` is built with interoperability in mind within the Yangfisher1
 community and even 3rd parties, the library consists of several packages.
 
 The main tracing implementation can be found in the root folder of this
@@ -77,7 +77,7 @@ For a server, pass `NewServerHandler` when calling `NewServer`, e.g.,
 ```go
 import (
 	"google.golang.org/grpc"
-	zipkingrpc "github.com/openzipkin/zipkin-go/middleware/grpc"
+	zipkingrpc "github.com/Yangfisher1/zipkin-go/middleware/grpc"
 )
 
 server = grpc.NewServer(grpc.StatsHandler(zipkingrpc.NewServerHandler(tracer)))
@@ -88,7 +88,7 @@ For a client, pass `NewClientHandler` when calling `Dial`, e.g.,
 ```go
 import (
 	"google.golang.org/grpc"
-	zipkingrpc "github.com/openzipkin/zipkin-go/middleware/grpc"
+	zipkingrpc "github.com/Yangfisher1/zipkin-go/middleware/grpc"
 )
 
 conn, err = grpc.Dial(addr, grpc.WithStatsHandler(zipkingrpc.NewClientHandler(tracer)))

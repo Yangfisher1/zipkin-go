@@ -1,4 +1,4 @@
-module github.com/openzipkin/zipkin-go
+module github.com/Yangfisher1/zipkin-go
 
 go 1.18
 

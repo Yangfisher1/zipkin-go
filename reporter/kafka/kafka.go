@@ -1,4 +1,4 @@
-// Copyright 2022 The OpenZipkin Authors
+// Copyright 2022 The Yangfisher1 Authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -23,13 +23,13 @@ import (
 
 	"github.com/IBM/sarama"
 
-	"github.com/openzipkin/zipkin-go/model"
-	"github.com/openzipkin/zipkin-go/reporter"
+	"github.com/Yangfisher1/zipkin-go/model"
+	"github.com/Yangfisher1/zipkin-go/reporter"
 )
 
 // defaultKafkaTopic sets the standard Kafka topic our Reporter will publish
 // on. The default topic for zipkin-receiver-kafka is "zipkin", see:
-// https://github.com/openzipkin/zipkin/tree/master/zipkin-receiver-kafka
+// https://github.com/Yangfisher1/zipkin/tree/master/zipkin-receiver-kafka
 const defaultKafkaTopic = "zipkin"
 
 // kafkaReporter implements Reporter by publishing spans to a Kafka
