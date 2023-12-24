@@ -17,8 +17,8 @@ func (c *GlobalCounter) Set(value int64) {
 	atomic.StoreInt64((*int64)(c), value)
 }
 
-func (c *GlobalCounter) Inc() int64 {
-	return atomic.AddInt64((*int64)(c), 1)
+func (c *GlobalCounter) Inc(value int64) int64 {
+	return atomic.AddInt64((*int64)(c), value)
 }
 
 func (c *GlobalCounter) Get() int64 {

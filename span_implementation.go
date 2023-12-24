@@ -79,11 +79,9 @@ func (s *spanImpl) Tag(key, value string) {
 func (s *spanImpl) Finish() {
 	if atomic.CompareAndSwapInt32(&s.mustCollect, 1, 0) {
 		s.Duration = time.Since(s.Timestamp)
-		// First, we won't send span just for calculation
-		GeneratedSpanCounter.Inc()
-		// if s.flushOnFinish {
-		// 	s.tracer.reporter.Send(s.SpanModel)
-		// }
+		if s.flushOnFinish {
+			s.tracer.reporter.Send(s.SpanModel)
+		}
 	}
 }
 
