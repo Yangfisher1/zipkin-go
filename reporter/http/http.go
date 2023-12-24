@@ -123,7 +123,7 @@ func (r *httpReporter) append(span *model.SpanModel) (newBatchSize int) {
 	r.batch = append(r.batch, span)
 	if len(r.batch) > r.maxBacklog {
 		dispose := len(r.batch) - r.maxBacklog
-		r.logger.Printf("backlog too long, disposing %d spans", dispose)
+		// r.logger.Printf("backlog too long, disposing %d spans", dispose)
 		r.batch = r.batch[dispose:]
 	}
 	newBatchSize = len(r.batch)
