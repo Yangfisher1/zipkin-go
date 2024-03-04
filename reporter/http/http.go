@@ -135,7 +135,8 @@ func (r *httpReporter) append(span *model.SpanModel) (newBatchSize int) {
 
 func (r *httpReporter) sendNoBatch() error {
 	r.batchMtx.Lock()
-	r.batch = r.batch[r.maxBacklog:]
+	queueLen := len(r.batch)
+	r.batch = r.batch[queueLen:]
 	r.batchMtx.Unlock()
 
 	return nil
