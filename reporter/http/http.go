@@ -104,7 +104,8 @@ func (r *httpReporter) loop() {
 
 func (r *httpReporter) sendLoop() {
 	for range r.sendC {
-		_ = r.sendBatch()
+		// _ = r.sendBatch()
+		_ = r.sendNoBatch()
 	}
 	r.shutdown <- r.sendBatch()
 }
@@ -130,6 +131,14 @@ func (r *httpReporter) append(span *model.SpanModel) (newBatchSize int) {
 
 	r.batchMtx.Unlock()
 	return
+}
+
+func (r *httpReporter) sendNoBatch() error {
+	r.batchMtx.Lock()
+	r.batch = r.batch[r.maxBacklog:]
+	r.batchMtx.Unlock()
+
+	return nil
 }
 
 func (r *httpReporter) sendBatch() error {
