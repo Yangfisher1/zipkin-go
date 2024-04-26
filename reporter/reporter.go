@@ -30,6 +30,13 @@ type Reporter interface {
 	Close() error         // Close the reporter
 }
 
+// ServerlessReporter interface supports diff tracing under serverless
+// to provide a powerful way to send aggregated spans if nothing special happens
+type ServerlessReporter interface {
+	Reporter
+	SendAggregatedSpans([]string)
+}
+
 type noopReporter struct{}
 
 func (r *noopReporter) Send(model.SpanModel) {}

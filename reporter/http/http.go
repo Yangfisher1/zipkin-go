@@ -26,7 +26,6 @@ import (
 	"sync"
 	"time"
 
-	zipkin "github.com/Yangfisher1/zipkin-go"
 	"github.com/Yangfisher1/zipkin-go/model"
 	"github.com/Yangfisher1/zipkin-go/reporter"
 )
@@ -146,7 +145,6 @@ func (r *httpReporter) sendBatch() error {
 	// Select all current spans in the batch to be sent
 	r.batchMtx.Lock()
 	sendBatch := r.batch[:]
-	zipkin.ReportedSpanCounter.Inc(int64(len(sendBatch)))
 	r.batchMtx.Unlock()
 
 	if len(sendBatch) == 0 {
