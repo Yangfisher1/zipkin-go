@@ -34,7 +34,7 @@ type Reporter interface {
 // to provide a powerful way to send aggregated spans if nothing special happens
 type ServerlessReporter interface {
 	Reporter
-	SendAggregatedSpans([]string)
+	SendAggregatedSpans(model.AggregatedSpan)
 }
 
 type noopReporter struct{}

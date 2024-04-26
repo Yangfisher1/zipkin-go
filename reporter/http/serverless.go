@@ -3,7 +3,6 @@ package http
 import (
 	"bytes"
 	"context"
-	"encoding/json"
 	"log"
 	"net/http"
 	"os"
@@ -14,33 +13,21 @@ import (
 	"github.com/Yangfisher1/zipkin-go/reporter"
 )
 
-type aggregatedSpan []string
-
-func (s aggregatedSpan) MarshalJSON() ([]byte, error) {
-	return json.Marshal(s)
-}
-
-// Serialize takes an array of Zipkin SpanModel objects and returns a JSON
-// encoding of it.
-func SerializeAggregatedSpans(spans []*aggregatedSpan) ([]byte, error) {
-	return json.Marshal(spans)
-}
-
 type serverlessReporter struct {
 	errorReporter *httpReporter
 	batchedUrl    string
-	batch         []*aggregatedSpan
+	batch         []*model.AggregatedSpan
 	batchInterval time.Duration
 	batchSize     int
 	maxBacklog    int
 	batchMtx      *sync.Mutex
-	spanC         chan *aggregatedSpan
+	spanC         chan *model.AggregatedSpan
 	sendC         chan struct{}
 	quit          chan struct{}
 	shutdown      chan error
 }
 
-func (r *serverlessReporter) SendAggregatedSpans(spans aggregatedSpan) {
+func (r *serverlessReporter) SendAggregatedSpans(spans model.AggregatedSpan) {
 	r.spanC <- &spans
 }
 
@@ -98,7 +85,7 @@ func (r *serverlessReporter) enqueueSend() {
 	}
 }
 
-func (r *serverlessReporter) append(span *aggregatedSpan) (newBatchSize int) {
+func (r *serverlessReporter) append(span *model.AggregatedSpan) (newBatchSize int) {
 	r.batchMtx.Lock()
 
 	r.batch = append(r.batch, span)
@@ -124,7 +111,7 @@ func (r *serverlessReporter) sendBatch() error {
 	}
 
 	// TODO: maybe an extra serializer is needed here
-	body, err := SerializeAggregatedSpans(sendBatch)
+	body, err := model.SerializeAggregatedSpans(sendBatch)
 	if err != nil {
 		r.errorReporter.logger.Printf("failed when marshalling the spans batch: %s\n", err.Error())
 		return err
@@ -158,7 +145,7 @@ func (r *serverlessReporter) sendBatch() error {
 }
 
 // NewServerlessReporter returns a new ServerlessReporter implementation.
-func NewServerlessReporter(batchedUrl string, url string, opts ...ReporterOption) reporter.Reporter {
+func NewServerlessReporter(batchedUrl string, url string, opts ...ReporterOption) reporter.ServerlessReporter {
 	r := serverlessReporter{
 		errorReporter: &httpReporter{
 			url:           url,
@@ -177,12 +164,12 @@ func NewServerlessReporter(batchedUrl string, url string, opts ...ReporterOption
 			reqTimeout:    defaultTimeout,
 		},
 		batchedUrl:    batchedUrl,
-		batch:         []*aggregatedSpan{},
+		batch:         []*model.AggregatedSpan{},
 		batchInterval: 1 * time.Second,
 		batchSize:     100,
 		maxBacklog:    1000,
 		batchMtx:      &sync.Mutex{},
-		spanC:         make(chan *aggregatedSpan),
+		spanC:         make(chan *model.AggregatedSpan),
 		sendC:         make(chan struct{}, 1),
 		quit:          make(chan struct{}, 1),
 		shutdown:      make(chan error, 1),
