@@ -161,13 +161,3 @@ func (s *SpanModel) UnmarshalJSON(b []byte) error {
 }
 
 type AggregatedSpan []string
-
-func (s AggregatedSpan) MarshalJSON() ([]byte, error) {
-	return json.Marshal(s)
-}
-
-// Serialize takes an array of Zipkin SpanModel objects and returns a JSON
-// encoding of it.
-func SerializeAggregatedSpans(spans []*AggregatedSpan) ([]byte, error) {
-	return json.Marshal(spans)
-}
