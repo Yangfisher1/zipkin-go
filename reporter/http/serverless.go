@@ -3,7 +3,7 @@ package http
 import (
 	"bytes"
 	"context"
-	"encoding/gob"
+	"encoding/json"
 	"log"
 	"net/http"
 	"os"
@@ -111,17 +111,13 @@ func (r *serverlessReporter) sendBatch() error {
 		return nil
 	}
 
-	// TODO: maybe an extra serializer is needed here
-	var buf bytes.Buffer
-	enc := gob.NewEncoder(&buf)
-	err := enc.Encode(sendBatch)
+	jsonData, err := json.Marshal(sendBatch)
 	if err != nil {
-		r.errorReporter.logger.Printf("failed when serialize the spans: %s\n", err.Error())
+		r.errorReporter.logger.Printf("failed to marshal the batch: %s\n", err.Error())
 		return err
 	}
 
-	body := buf.Bytes()
-	req, err := http.NewRequest("POST", r.batchedUrl, bytes.NewReader(body))
+	req, err := http.NewRequest("POST", r.batchedUrl, bytes.NewBuffer(jsonData))
 	if err != nil {
 		r.errorReporter.logger.Printf("failed when creating the request: %s\n", err.Error())
 		return err
