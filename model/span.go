@@ -160,4 +160,5 @@ func (s *SpanModel) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
+// These spans are already been marshalled into JSON format.
 type AggregatedSpan []string

@@ -30,6 +30,11 @@ type Reporter interface {
 	Close() error         // Close the reporter
 }
 
+type AggregatedReporter interface {
+	Send(model.AggregatedSpan)
+	Close() error
+}
+
 // ServerlessReporter interface supports diff tracing under serverless
 // to provide a powerful way to send aggregated spans if nothing special happens
 type ServerlessReporter interface {
