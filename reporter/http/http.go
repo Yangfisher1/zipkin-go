@@ -24,7 +24,6 @@ import (
 	"net/http"
 	"os"
 	"sync"
-	"sync/atomic"
 	"time"
 
 	"github.com/Yangfisher1/zipkin-go/model"
@@ -61,18 +60,13 @@ type httpReporter struct {
 	reqCallback   RequestCallbackFn
 	reqTimeout    time.Duration
 	serializer    reporter.SpanSerializer
-
-	// This part is used for breakdown evaluation
-	networkSentCnt   int
-	sendWaitDuration int64
 }
 
 // Send implements reporter
 func (r *httpReporter) Send(s model.SpanModel) {
-	start := time.Now()
-	r.spanC <- &s
-	elapsed := time.Since(start).Nanoseconds()
-	atomic.AddInt64(&r.sendWaitDuration, elapsed)
+	go func(span model.SpanModel) {
+		r.spanC <- &span
+	}(s)
 }
 
 // Close implements reporter
@@ -104,24 +98,6 @@ func (r *httpReporter) loop() {
 			}
 		case <-r.quit:
 			close(r.sendC)
-			return
-		}
-	}
-}
-
-func (r *httpReporter) statLoop() {
-	ticker := time.NewTicker(1 * time.Second)
-	defer ticker.Stop()
-
-	for {
-		select {
-		case <-ticker.C:
-			if r.networkSentCnt != 0 && atomic.LoadInt64(&r.sendWaitDuration) != 0 {
-				r.logger.Printf("Network sent count: %d, send wait duration: %d ns\n", r.networkSentCnt, atomic.LoadInt64(&r.sendWaitDuration))
-				r.networkSentCnt = 0
-				atomic.StoreInt64(&r.sendWaitDuration, 0)
-			}
-		case <-r.quit:
 			return
 		}
 	}
@@ -204,7 +180,6 @@ func (r *httpReporter) sendBatch() error {
 	// Remove sent spans from the batch even if they were not saved
 	r.batchMtx.Lock()
 	r.batch = r.batch[len(sendBatch):]
-	r.networkSentCnt += 1
 	r.batchMtx.Unlock()
 
 	return nil
@@ -274,22 +249,20 @@ func Serializer(serializer reporter.SpanSerializer) ReporterOption {
 // http://localhost:9411/api/v2/spans
 func NewReporter(url string, opts ...ReporterOption) reporter.Reporter {
 	r := httpReporter{
-		url:              url,
-		logger:           log.New(os.Stderr, "", log.LstdFlags),
-		client:           &http.Client{},
-		batchInterval:    defaultBatchInterval,
-		batchSize:        defaultBatchSize,
-		maxBacklog:       defaultMaxBacklog,
-		batch:            []*model.SpanModel{},
-		spanC:            make(chan *model.SpanModel),
-		sendC:            make(chan struct{}, 1),
-		quit:             make(chan struct{}, 1),
-		shutdown:         make(chan error, 1),
-		batchMtx:         &sync.Mutex{},
-		serializer:       reporter.JSONSerializer{},
-		reqTimeout:       defaultTimeout,
-		networkSentCnt:   0,
-		sendWaitDuration: 0,
+		url:           url,
+		logger:        log.New(os.Stderr, "", log.LstdFlags),
+		client:        &http.Client{},
+		batchInterval: defaultBatchInterval,
+		batchSize:     defaultBatchSize,
+		maxBacklog:    defaultMaxBacklog,
+		batch:         []*model.SpanModel{},
+		spanC:         make(chan *model.SpanModel),
+		sendC:         make(chan struct{}, 1),
+		quit:          make(chan struct{}, 1),
+		shutdown:      make(chan error, 1),
+		batchMtx:      &sync.Mutex{},
+		serializer:    reporter.JSONSerializer{},
+		reqTimeout:    defaultTimeout,
 	}
 
 	for _, opt := range opts {
@@ -298,7 +271,6 @@ func NewReporter(url string, opts ...ReporterOption) reporter.Reporter {
 
 	go r.loop()
 	go r.sendLoop()
-	go r.statLoop()
 
 	return &r
 }
