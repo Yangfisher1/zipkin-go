@@ -116,7 +116,11 @@ func (r *httpReporter) statLoop() {
 	for {
 		select {
 		case <-ticker.C:
-			r.logger.Printf("Network sent count: %d, send wait duration: %d ns\n", r.networkSentCnt, atomic.LoadInt64(&r.sendWaitDuration))
+			if r.networkSentCnt != 0 && atomic.LoadInt64(&r.sendWaitDuration) != 0 {
+				r.logger.Printf("Network sent count: %d, send wait duration: %d ns\n", r.networkSentCnt, atomic.LoadInt64(&r.sendWaitDuration))
+				r.networkSentCnt = 0
+				atomic.StoreInt64(&r.sendWaitDuration, 0)
+			}
 		case <-r.quit:
 			return
 		}
