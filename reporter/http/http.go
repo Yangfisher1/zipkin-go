@@ -1,4 +1,4 @@
-// Copyright 2022 The Yangfisher1 Authors
+// Copyright 2022 The OpenZipkin Authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -103,8 +103,7 @@ func (r *httpReporter) loop() {
 
 func (r *httpReporter) sendLoop() {
 	for range r.sendC {
-		// _ = r.sendBatch()
-		_ = r.sendNoBatch()
+		_ = r.sendBatch()
 	}
 	r.shutdown <- r.sendBatch()
 }
@@ -123,22 +122,12 @@ func (r *httpReporter) append(span *model.SpanModel) (newBatchSize int) {
 	r.batch = append(r.batch, span)
 	if len(r.batch) > r.maxBacklog {
 		dispose := len(r.batch) - r.maxBacklog
-		// r.logger.Printf("backlog too long, disposing %d spans", dispose)
 		r.batch = r.batch[dispose:]
 	}
 	newBatchSize = len(r.batch)
 
 	r.batchMtx.Unlock()
 	return
-}
-
-func (r *httpReporter) sendNoBatch() error {
-	r.batchMtx.Lock()
-	queueLen := len(r.batch)
-	r.batch = r.batch[queueLen:]
-	r.batchMtx.Unlock()
-
-	return nil
 }
 
 func (r *httpReporter) sendBatch() error {
