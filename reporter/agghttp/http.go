@@ -48,7 +48,9 @@ type httpReporter struct {
 
 // Send implements reporter
 func (r *httpReporter) Send(s model.AggregatedSpan) {
-	r.spanC <- &s
+	go func(span model.AggregatedSpan) {
+		r.spanC <- &span
+	}(s)
 }
 
 // Close implements reporter
