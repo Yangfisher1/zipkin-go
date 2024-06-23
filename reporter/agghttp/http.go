@@ -16,8 +16,8 @@ import (
 
 // defaults
 const (
-	defaultTimeout       = 5 * time.Second // timeout for http request in seconds
-	defaultBatchInterval = 1 * time.Second // BatchInterval in seconds
+	defaultTimeout       = 10 * time.Second // timeout for http request in seconds
+	defaultBatchInterval = 1 * time.Second  // BatchInterval in seconds
 	defaultBatchSize     = 100
 	defaultMaxBacklog    = 1000
 )
@@ -144,12 +144,10 @@ func (r *httpReporter) sendBatch() error {
 
 	resp, err := r.client.Do(req.WithContext(ctx))
 	if err != nil {
-		r.logger.Printf("failed to send the request: %s\n", err.Error())
 		return err
 	}
 	_ = resp.Body.Close()
 	if resp.StatusCode < 200 || resp.StatusCode > 299 {
-		r.logger.Printf("failed the request with status code %d\n", resp.StatusCode)
 	}
 
 	// Remove sent spans from the batch even if they were not saved
