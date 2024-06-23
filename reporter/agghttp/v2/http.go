@@ -50,12 +50,12 @@ func (r *httpReporter) send(s model.AggregatedSpan) {
 
 	jsonData, err := json.Marshal(batch)
 	if err != nil {
-		// r.logger.Printf("failed when marshalling the spans batch: %s\n", err.Error())
+		r.logger.Printf("failed when marshalling the spans batch: %s\n", err.Error())
 	}
 
 	req, err := http.NewRequest("POST", r.url, bytes.NewBuffer(jsonData))
 	if err != nil {
-		// r.logger.Printf("failed when creating the request: %s\n", err.Error())
+		r.logger.Printf("failed when creating the request: %s\n", err.Error())
 	}
 
 	ctx, cancel := context.WithTimeout(req.Context(), r.reqTimeout)
@@ -64,10 +64,11 @@ func (r *httpReporter) send(s model.AggregatedSpan) {
 	resp, err := r.client.Do(req.WithContext(ctx))
 	if err != nil {
 		// r.logger.Printf("failed to send the request: %s\n", err.Error())
-	}
-	_ = resp.Body.Close()
-	if resp.StatusCode < 200 || resp.StatusCode > 299 {
-		// r.logger.Printf("failed the request with status code %d\n", resp.StatusCode)
+	} else {
+		_ = resp.Body.Close()
+		if resp.StatusCode < 200 || resp.StatusCode > 299 {
+			r.logger.Printf("failed the request with status code %d\n", resp.StatusCode)
+		}
 	}
 }
 
