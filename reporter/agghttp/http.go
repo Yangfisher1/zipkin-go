@@ -18,8 +18,8 @@ import (
 const (
 	defaultTimeout       = 10 * time.Second // timeout for http request in seconds
 	defaultBatchInterval = 1 * time.Second  // BatchInterval in seconds
-	defaultBatchSize     = 20
-	defaultMaxBacklog    = 100
+	defaultBatchSize     = 2000
+	defaultMaxBacklog    = 10000
 )
 
 // HTTPDoer will do a request to the Zipkin HTTP Collector
