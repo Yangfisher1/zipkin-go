@@ -16,10 +16,11 @@ import (
 
 // defaults
 const (
-	defaultTimeout       = 5 * time.Second // timeout for http request in seconds
-	defaultBatchInterval = 1 * time.Second // BatchInterval in seconds
+	defaultTimeout       = 10 * time.Second // timeout for http request in seconds
+	defaultBatchInterval = 1 * time.Second  // BatchInterval in seconds
 	defaultBatchSize     = 100
 	defaultMaxBacklog    = 1000
+	defaultSendWorkers   = 5 // Goroutines used for sending spans
 )
 
 // HTTPDoer will do a request to the Zipkin HTTP Collector
@@ -35,6 +36,7 @@ type httpReporter struct {
 	batchInterval time.Duration
 	batchSize     int
 	maxBacklog    int
+	sendWorkers   int // number of send workers
 	batchMtx      *sync.Mutex
 	batch         []*model.AggregatedSpan
 	spanC         chan *model.AggregatedSpan
@@ -121,9 +123,9 @@ func (r *httpReporter) sendBatch() error {
 	// Select all current spans in the batch to be sent
 	r.batchMtx.Lock()
 	sendBatch := r.batch[:]
-	r.batchMtx.Unlock()
 
 	if len(sendBatch) == 0 {
+		r.batchMtx.Unlock()
 		return nil
 	}
 
@@ -132,6 +134,9 @@ func (r *httpReporter) sendBatch() error {
 		r.logger.Printf("failed when marshalling the spans batch: %s\n", err.Error())
 		return err
 	}
+
+	r.batch = r.batch[len(sendBatch):]
+	r.batchMtx.Unlock()
 
 	req, err := http.NewRequest("POST", r.url, bytes.NewBuffer(jsonData))
 	if err != nil {
@@ -149,11 +154,6 @@ func (r *httpReporter) sendBatch() error {
 	_ = resp.Body.Close()
 	if resp.StatusCode < 200 || resp.StatusCode > 299 {
 	}
-
-	// Remove sent spans from the batch even if they were not saved
-	r.batchMtx.Lock()
-	r.batch = r.batch[len(sendBatch):]
-	r.batchMtx.Unlock()
 
 	return nil
 }
@@ -236,6 +236,7 @@ func NewReporter(url string, opts ...ReporterOption) reporter.AggregatedReporter
 		batchMtx:      &sync.Mutex{},
 		serializer:    reporter.JSONSerializer{},
 		reqTimeout:    defaultTimeout,
+		sendWorkers:   defaultSendWorkers,
 	}
 
 	for _, opt := range opts {
@@ -243,7 +244,9 @@ func NewReporter(url string, opts ...ReporterOption) reporter.AggregatedReporter
 	}
 
 	go r.loop()
-	go r.sendLoop()
+	for i := 0; i < r.sendWorkers; i++ {
+		go r.sendLoop()
+	}
 
 	return &r
 }
